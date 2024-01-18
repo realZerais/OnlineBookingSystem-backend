@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 const db = require("../config/db");
 const bcrypt = require('bcryptjs');
 
-const generateToken = (_username) => {
-    return jwt.sign({ _username }, process.env.JWT_SECRET, { expiresIn: "3d" });
+const generateToken = (_username, _role) => {
+    return jwt.sign({ _username, _role }, process.env.JWT_SECRET, { expiresIn: "3d" });
 };
 
 
@@ -20,6 +20,9 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
 
+        const role = result.rows[0].user_role;
+        // console.log(role);
+
         // Compare the hashed password
         const isValidPassword = await bcrypt.compare(password, result.rows[0].password);
 
@@ -27,9 +30,12 @@ const loginUser = async (req, res) => {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
 
-        const accessToken = generateToken(username);
-        res.cookie('token', accessToken, { httpOnly: true });
-        res.status(200).json({ accessToken });
+        const accessToken = generateToken(username, role);
+        res.cookie('accessToken', accessToken, { httpOnly: true });
+        res.cookie('username', username, { httpOnly: true });
+        res.cookie('accessToken', role, { httpOnly: true });
+        res.status(200).json({ accessToken, username, role });
+
 
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -62,13 +68,17 @@ const signupUser = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const result = await db.query(query, [username, hashedPassword, email, full_name, phone_number, user_role]);
+        await db.query(query, [username, hashedPassword, email, full_name, phone_number, user_role]);
 
-        // res.status(201).send(result.rows[0]);
+        const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
 
-        const accessToken = generateToken(username);
-        res.cookie('token', accessToken, { httpOnly: true });
-        res.status(200).json({ accessToken, username });
+        const role = result.rows[0].user_role;
+
+        const accessToken = generateToken(username, role);
+        res.cookie('accessToken', accessToken, { httpOnly: true });
+        res.cookie('username', username, { httpOnly: true });
+        res.cookie('accessToken', role, { httpOnly: true });
+        res.status(200).json({ accessToken, username, role });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
