@@ -1,6 +1,6 @@
 const express = require("express");
-const { signupUser, loginUser } = require("../controllers/userController")
-const { authenticateToken } = require("../middlewares/authMiddleware")
+const { signupUser, loginUser, getUserInfo } = require("../controllers/userController")
+const { cookieJwtAuth } = require("../middlewares/authMiddleware")
 const router = express.Router();
 
 router.post("/login", loginUser);
@@ -8,6 +8,6 @@ router.get("/login", (req, res) => {
     res.status(400).json({ "test": "test" })
 })
 router.post("/signup", signupUser);
-router.get("/protected", authenticateToken)
+router.get("/info", cookieJwtAuth, getUserInfo)
 
 module.exports = router;

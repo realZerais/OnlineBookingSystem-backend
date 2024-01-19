@@ -33,7 +33,7 @@ const loginUser = async (req, res) => {
         const accessToken = generateToken(username, role);
         res.cookie('accessToken', accessToken, { httpOnly: true });
         res.cookie('username', username, { httpOnly: true });
-        res.cookie('accessToken', role, { httpOnly: true });
+        res.cookie('role', role, { httpOnly: true });
         res.status(200).json({ accessToken, username, role });
 
 
@@ -84,10 +84,32 @@ const signupUser = async (req, res) => {
     }
 }
 
+const getUserInfo = async (req, res) => {
+    const username = req.username;
 
+
+
+    try {
+        const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+
+        const userInfo = result.rows[0];
+
+        // console.log("called")
+        res.status(200).json(userInfo);
+        // res.status(200).json({ message: 'hello ' + username });
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+
+
+
+
+}
 
 
 module.exports = {
     signupUser,
     loginUser,
+    getUserInfo
 };
