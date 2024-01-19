@@ -3,21 +3,24 @@ const jwt = require('jsonwebtoken');
 
 
 const cookieJwtAuth = (req, res, next) => {
-    const authHeader = req.headers['authorization']
-    const accessTokentoken = authHeader && authHeader.split(' ')[1];
+    const { authorization } = req.headers;
+
+    if (!authorization) {
+        return res.status(401).json({ error: "authorization token required" })
+    }
+
+    const accessToken = authorization.split(' ')[1];
+    console.log(accessToken)
 
     try {
-        if (accessTokentoken == null) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
 
-        const { _username } = jwt.verify(accessTokentoken, process.env.JWT_SECRET);
-
+        const { _username } = jwt.verify(accessToken, process.env.JWT_SECRET);
         req.username = _username;
         next();
+
     } catch (error) {
-        // res.clearCookie("accessToken");
-        res.status(400).json({ error: error.message });
+        res.clearCookie("accessToken");
+        res.status(400).json({ error: "authorization error" });
     }
 }
 
