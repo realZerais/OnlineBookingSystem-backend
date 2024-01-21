@@ -14,4 +14,5 @@ router.get("/info", cookieJwtAuth, getUserInfo)
 router.get("/allUserInfo", cookieJwtAuth, getAllUserInfo)
 
 router.put("/editUserRole", cookieJwtAuth, editUserRole)
+
 module.exports = router;

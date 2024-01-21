@@ -126,7 +126,7 @@ const editUserRole = async (req, res) => {
     try {
         const result = await db.query('UPDATE users SET user_role = $1 WHERE username = $2', [user_role, username]);
 
-        console.log(result);
+        // console.log(result);
 
         // console.log("called")
         res.status(200).json({ message: "Role edited successfully!" });
