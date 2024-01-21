@@ -10,17 +10,19 @@ const cookieJwtAuth = (req, res, next) => {
     }
 
     const accessToken = authorization.split(' ')[1];
-    console.log(accessToken)
+    // console.log(accessToken);
 
     try {
 
-        const { _username } = jwt.verify(accessToken, process.env.JWT_SECRET);
+        const { _username, _user_role} = jwt.verify(accessToken, process.env.JWT_SECRET);
         req.username = _username;
+        req.user_role = _user_role;
         next();
 
     } catch (error) {
         res.clearCookie("accessToken");
         res.status(400).json({ error: "authorization error" });
+        return res.redirect("/")
     }
 }
 
