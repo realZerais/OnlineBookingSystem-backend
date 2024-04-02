@@ -121,17 +121,22 @@ const getAllUserInfo = async (req, res) => {
     }
 }
 
-const editUserRole = async (req, res) => {
-    const { username, user_role } = req.body;
+const editUser = async (req, res) => {
+    const { username, full_name, user_role, email, phone_number, registration_date, user_id } = req.body;
     try {
-        const result = await db.query('UPDATE users SET user_role = $1 WHERE username = $2', [user_role, username]);
+        const result = await db.query('UPDATE users SET username = $2, full_name = $3, user_role = $4, email = $5, phone_number = $6, registration_date = $7 WHERE user_id = $1',
+            [
+                user_id,
+                username,
+                full_name,
+                user_role,
+                email,
+                phone_number,
+                registration_date
+            ]
+        )
 
-        // console.log(result);
-
-        // console.log("called")
-        res.status(200).json({ message: "Role edited successfully!" });
-        // res.status(200).json({ message: 'hello ' + username });
-
+        res.status(200).json({ message: "User edited successfully!" });
 
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -144,5 +149,5 @@ module.exports = {
     loginUser,
     getUserInfo,
     getAllUserInfo,
-    editUserRole
+    editUser
 };
