@@ -51,8 +51,25 @@ const editBook = async (req, res) => {
     }
 }
 
+const getAllPendingBook = async (req, res) => {
+    try {
+        const result = await db.query('SELECT * FROM cellphone_repair_booking WHERE repair_status = $1',
+            [
+                'Pending'
+            ]);
+
+        const allPending = result.rows;
+
+        res.status(200).json(allPending);
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
     addBook,
     getAllBook,
-    editBook
+    editBook,
+    getAllPendingBook
 }
