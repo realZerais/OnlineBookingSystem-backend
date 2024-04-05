@@ -44,6 +44,7 @@ const editBook = async (req, res) => {
             ]
         )
 
+        console.log(result);
         res.status(200).json({ message: "Book edited successfully!" });
 
     } catch (error) {
@@ -67,9 +68,31 @@ const getAllPendingBook = async (req, res) => {
     }
 }
 
+
+const EditPendingBook = async (req, res) => {
+    const { booking_id, repair_status } = req.body;
+
+    try {
+        const result = await db.query('UPDATE cellphone_repair_booking SET repair_status = $2 WHERE booking_id = $1',
+            [
+                booking_id,
+                repair_status,
+            ]
+        )
+
+        console.log(result);
+        res.status(200).json({ message: `You are now fixing booking ${booking_id}.` });
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+
+}
+
 module.exports = {
     addBook,
     getAllBook,
     editBook,
-    getAllPendingBook
+    getAllPendingBook,
+    EditPendingBook
 }
