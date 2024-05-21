@@ -3,7 +3,7 @@ const db = require("../config/db");
 const addBook = async (req, res) => {
     const { id, date, model, issue } = req.body;
 
-    const query = 'INSERT INTO cellphone_repair_booking (user_id, booking_date, cellphone_model, issue_description) VALUES ($1, $2, $3, $4) ';
+    const query = 'INSERT INTO books (user_id, booking_date, cellphone_model, issue_description) VALUES ($1, $2, $3, $4) ';
 
     try {
         const result = await db.query(query, [id, date, model, issue]);
@@ -15,7 +15,7 @@ const addBook = async (req, res) => {
 
 const getAllBook = async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM cellphone_repair_booking');
+        const result = await db.query('SELECT * FROM books');
 
         const allBookingInfo = result.rows;
 
@@ -33,7 +33,7 @@ const editBook = async (req, res) => {
     const { booking_id, booking_date, cellphone_model, issue_description, repair_status, user_id } = req.body;
 
     try {
-        const result = await db.query('UPDATE cellphone_repair_booking SET user_id = $2, booking_date = $3, cellphone_model = $4, issue_description = $5, repair_status = $6 WHERE booking_id = $1',
+        const result = await db.query('UPDATE books SET user_id = $2, booking_date = $3, cellphone_model = $4, issue_description = $5, repair_status = $6 WHERE booking_id = $1',
             [
                 booking_id,
                 user_id,
@@ -54,7 +54,7 @@ const editBook = async (req, res) => {
 
 const getAllPendingBook = async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM cellphone_repair_booking WHERE repair_status = $1',
+        const result = await db.query('SELECT * FROM books WHERE repair_status = $1',
             [
                 'Pending'
             ]);
@@ -73,7 +73,7 @@ const EditPendingBook = async (req, res) => {
     const { booking_id, repair_status } = req.body;
 
     try {
-        const result = await db.query('UPDATE cellphone_repair_booking SET repair_status = $2 WHERE booking_id = $1',
+        const result = await db.query('UPDATE books SET repair_status = $2 WHERE booking_id = $1',
             [
                 booking_id,
                 repair_status,

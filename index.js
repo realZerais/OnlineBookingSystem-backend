@@ -10,8 +10,6 @@ const app = express();
 const PORT = process.env.PORT;
 
 
-
-
 // Middlewares
 app.use(express.json());
 app.use(cors()); // Enable CORS for all routes
@@ -24,6 +22,7 @@ app.get('/', (req, res) => {
 
 app.use("/user", userRoutes);
 app.use("/booking", bookingRoutes)
+
 
 
 app.listen(
