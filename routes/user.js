@@ -1,5 +1,5 @@
 const express = require("express");
-const { signupUser, loginUser, getUserInfo, getAllUserInfo, editUser } = require("../controllers/userController")
+const { signupUser, loginUser, getUserInfo, getAllUserInfo, editUser, deleteUser } = require("../controllers/userController")
 const { cookieJwtAuth } = require("../middlewares/authMiddleware")
 const router = express.Router();
 
@@ -12,6 +12,8 @@ router.get("/info", cookieJwtAuth, getUserInfo)
 router.get("/allUserInfo", cookieJwtAuth, getAllUserInfo)
 
 router.put("/editUser", cookieJwtAuth, editUser)
+
+router.delete("/deleteUser", cookieJwtAuth, deleteUser)
 
 
 module.exports = router;

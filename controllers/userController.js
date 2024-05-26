@@ -143,11 +143,29 @@ const editUser = async (req, res) => {
     }
 }
 
+const deleteUser = async (req, res)=>{
+    const {user_id} = req.body;
+
+    try {
+        const result = await db.query('DELETE FROM users WHERE user_id = $1',
+            [
+                user_id,
+            ]
+        )
+
+        console.log(result);
+        res.status(200).json({ message: `User deleted successfully! User ID: ${user_id}.` });
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
 
 module.exports = {
     signupUser,
     loginUser,
     getUserInfo,
     getAllUserInfo,
-    editUser
+    editUser,
+    deleteUser
 };
