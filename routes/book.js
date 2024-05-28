@@ -3,7 +3,7 @@ const {
     addBook, getAllBook, editBook, 
     getAllPendingBook, EditPendingBook, editRepairingBook, getAllRepairingBook, getAllDoneBook,
     getAllPendingAppointment, editAllPendingAppointment, getAllApprovedAppointment,
-    deleteBook
+    deleteBook, searchedBookInfo
 } = require("../controllers/bookController")
 const { cookieJwtAuth } = require("../middlewares/authMiddleware")
 
@@ -31,4 +31,6 @@ router.get("/approvedAppointment",cookieJwtAuth, getAllApprovedAppointment);
 router.patch("/editAppointment",cookieJwtAuth, editAllPendingAppointment);
 
 router.delete("/deleteBook", deleteBook)
+
+router.get("/search/:booking_id", searchedBookInfo)
 module.exports = router;

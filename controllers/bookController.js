@@ -214,6 +214,32 @@ const deleteBook = async (req, res)=>{
     }
 }
 
+const searchedBookInfo = async (req, res) => {
+
+    
+    //select * from users where username like '%a%';
+
+    try {
+        const result = await db.query('SELECT * FROM books WHERE booking_id = $1', 
+        [
+            `${req.params.booking_id}`
+        ]);
+
+        const userInfo = result.rows;
+
+        // console.log("called")
+        res.status(200).json(userInfo);
+        // res.status(200).json({ message: 'hello ' + username });
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+
+
+
+
+}
+
 module.exports = {
     addBook,
     getAllBook,
@@ -226,5 +252,6 @@ module.exports = {
     getAllPendingAppointment,
     editAllPendingAppointment,
     getAllApprovedAppointment,
-    deleteBook
+    deleteBook,
+    searchedBookInfo
 }

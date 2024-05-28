@@ -161,11 +161,56 @@ const deleteUser = async (req, res)=>{
     }
 }
 
+const getUserBooks = async (req, res) =>{
+
+    try {
+        const result = await db.query(' SELECT * FROM books INNER JOIN users ON books.user_id = users.user_id WHERE users.user_id = $1',
+            [
+                req.params.userId,
+            ]
+        )
+
+        const userBooks = result.rows;
+        res.status(200).json(userBooks);
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+
+const searchedUserInfo = async (req, res) => {
+
+    
+    //select * from users where username like '%a%';
+
+    try {
+        const result = await db.query('SELECT * FROM users WHERE username LIKE $1', 
+        [
+            `%${req.params.username}%`
+        ]);
+
+        const userInfo = result.rows;
+
+        // console.log("called")
+        res.status(200).json(userInfo);
+        // res.status(200).json({ message: 'hello ' + username });
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+
+
+
+
+}
 module.exports = {
     signupUser,
     loginUser,
     getUserInfo,
     getAllUserInfo,
     editUser,
-    deleteUser
+    deleteUser,
+    getUserBooks,
+    searchedUserInfo
 };
