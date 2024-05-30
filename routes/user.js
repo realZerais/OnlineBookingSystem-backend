@@ -3,20 +3,20 @@ const { signupUser, loginUser, getUserInfo, getAllUserInfo, editUser, deleteUser
 const { cookieJwtAuth } = require("../middlewares/authMiddleware")
 const router = express.Router();
 
-router.post("/login", loginUser);
+router.post("/login", loginUser);//
 
-router.post("/signup", signupUser);
+router.post("/signup", signupUser);//
 
-router.get("/info", cookieJwtAuth, getUserInfo)
-// router.get("/allUserInfo", getAllUserInfo)
-router.get("/allUserInfo", cookieJwtAuth, getAllUserInfo)
+router.get("/userInfo/",cookieJwtAuth, getUserInfo)
 
-router.put("/editUser", cookieJwtAuth, editUser)
+router.get("/allUserInfo", getAllUserInfo)//
 
-router.delete("/deleteUser", cookieJwtAuth, deleteUser)
+router.put("/editUser", editUser)//
 
-router.get("/userBooks/:userId", getUserBooks)
+router.delete("/deleteUser", cookieJwtAuth, deleteUser)//
 
-router.get("/search/:username", searchedUserInfo)
+router.get("/userBooks/:userId", getUserBooks)//
+
+router.get("/search/:username", searchedUserInfo)//
 
 module.exports = router;

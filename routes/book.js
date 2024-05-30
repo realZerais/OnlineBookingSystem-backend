@@ -1,8 +1,8 @@
 const express = require("express");
 const { 
     addBook, getAllBook, editBook, 
-    getAllPendingBook, EditPendingBook, editRepairingBook, getAllRepairingBook, getAllDoneBook,
-    getAllPendingAppointment, editAllPendingAppointment, getAllApprovedAppointment,
+    getAllPendingBooks, EditPendingBook, editRepairingBook, getAllRepairingBook, getAllCompletedBooks,
+    getAllPendingAppointment, editPendingAppointment, getAllNonPendingAppointment, getAllApprovedAppointment,
     deleteBook, searchedBookInfo
 } = require("../controllers/bookController")
 const { cookieJwtAuth } = require("../middlewares/authMiddleware")
@@ -11,26 +11,30 @@ const { cookieJwtAuth } = require("../middlewares/authMiddleware")
 const router = express.Router();
 
 
-router.get("/allBookInfo", cookieJwtAuth, getAllBook);
+router.get("/allBookInfo", getAllBook);//
 
-router.post("/addBook", cookieJwtAuth, addBook);
+router.post("/addBook", addBook);//
 
-router.put("/editBook", cookieJwtAuth, editBook);
+router.put("/editBook", editBook);//
 
 
-router.get("/pendingBooks", cookieJwtAuth, getAllPendingBook);
-router.get("/doneBooks",cookieJwtAuth, getAllDoneBook);
+router.get("/pendingBooks", getAllPendingBooks);//
+router.get("/completeBooks", getAllCompletedBooks);//
 router.patch("/editPendingBook", cookieJwtAuth, EditPendingBook)
 
 
 router.patch("/editRepairingBook", cookieJwtAuth, editRepairingBook)
-router.get("/repairingBooks", cookieJwtAuth, getAllRepairingBook);
+router.get("/repairingBooks", getAllRepairingBook);//
 
-router.get("/pendingAppointment",cookieJwtAuth, getAllPendingAppointment);
-router.get("/approvedAppointment",cookieJwtAuth, getAllApprovedAppointment);
-router.patch("/editAppointment",cookieJwtAuth, editAllPendingAppointment);
+router.get("/pendingAppointment", getAllPendingAppointment);//
+router.get("/getAllApprovedAppointment", getAllApprovedAppointment);
+router.get("/getAllNonPendingAppointment", getAllNonPendingAppointment);//
 
-router.delete("/deleteBook", deleteBook)
+router.patch("/editPendingAppointment",cookieJwtAuth, editPendingAppointment);//
 
-router.get("/search/:booking_id", searchedBookInfo)
+
+router.delete("/deleteBook", deleteBook)//
+
+router.get("/search/:book_id", searchedBookInfo)//
+
 module.exports = router;

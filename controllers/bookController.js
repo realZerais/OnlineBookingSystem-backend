@@ -1,26 +1,51 @@
 const db = require("../config/db");
 
 const addBook = async (req, res) => {
-    const { user_id, booking_date, cellphone_model, issue_description } = req.body;
+    const { user_id, book_date, cellphone_model, issue_description } = req.body;
 
-    const query = 'INSERT INTO books (user_id, booking_date, cellphone_model, issue_description) VALUES ($1, $2, $3, $4) ';
+    const query = 'INSERT INTO books (user_id, book_date, cellphone_model, issue_description) VALUES ($1, $2, $3, $4) ';
 
     try {
-        const result = await db.query(query, [user_id, booking_date, cellphone_model, issue_description]);
+        const result = await db.query(query, [user_id, book_date, cellphone_model, issue_description]);
         res.status(200).json({ message: "Book added successfully!" });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 }
 
-const getAllBook = async (req, res) => {
-    try {
-        const result = await db.query('SELECT * FROM books');
 
-        const allBookingInfo = result.rows;
+
+// SELECT 
+//   b.book_id,
+//   b.book_date,
+//   u.user_id,
+//   u.username,
+//   u.full_name,
+//   u.email,
+//   u.phone_number,
+//   rs.status_name AS repair_status,
+//   aps.status_name AS appointment_status,
+//   b.cellphone_model,
+//   b.remark
+// FROM 
+//   books b
+// JOIN 
+//   users u ON b.user_id = u.user_id
+// JOIN 
+//   repair_statuses rs ON b.repair_status_id = rs.repair_status_id
+// JOIN 
+//   appointment_statuses aps ON b.appointment_status_id = aps.appointment_status_id;
+
+
+const getAllBook = async (req, res) => {
+    let query = 'SELECT b.book_id, b.issue_description, b.book_date, u.user_id, u.username, u.full_name, u.email, u.phone_number,  rs.status_name AS repair_status, aps.status_name AS appointment_status, b.cellphone_model, b.remark FROM books b JOIN users u ON b.user_id = u.user_id JOIN repair_statuses rs ON b.repair_status_id = rs.repair_status_id JOIN appointment_statuses aps ON b.appointment_status_id = aps.appointment_status_id'
+    try {
+        const result = await db.query(query);
+
+        const allBookInfo = result.rows;
 
         // console.log("called")
-        res.status(200).json(allBookingInfo);
+        res.status(200).json(allBookInfo);
 
         // res.status(200).json({ message: 'hello ' + username });
 
@@ -29,16 +54,24 @@ const getAllBook = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 }
+// UPDATE books SET 
+// user_id = $2, 
+// booking_date = $3, 
+// cellphone_model = $4, 
+// issue_description = $5, 
+// repair_status_id = (SELECT repair_status_id FROM repair_statuses WHERE status_name = $6), 
+// appointment_status_id = (SELECT appointment_status_id FROM appointment_statuses WHERE status_name = $7) 
+// WHERE book_id = $1
 
 const editBook = async (req, res) => {
-    const { booking_id, booking_date, cellphone_model, issue_description, repair_status, user_id, appointment_status } = req.body;
+    const { book_id, book_date, cellphone_model, issue_description, repair_status, user_id, appointment_status } = req.body;
 
     try {
-        const result = await db.query('UPDATE books SET user_id = $2, booking_date = $3, cellphone_model = $4, issue_description = $5, repair_status = $6, appointment_status = $7 WHERE booking_id = $1',
+        const result = await db.query('UPDATE books SET user_id = $2, book_date = $3, cellphone_model = $4, issue_description = $5, repair_status_id = (SELECT repair_status_id FROM repair_statuses WHERE status_name = $6), appointment_status_id = (SELECT appointment_status_id FROM appointment_statuses WHERE status_name = $7) WHERE book_id = $1',
             [
-                booking_id,
+                book_id,
                 user_id,
-                booking_date,
+                book_date,
                 cellphone_model,
                 issue_description,
                 repair_status,
@@ -54,14 +87,11 @@ const editBook = async (req, res) => {
     }
 }
 
-const getAllPendingBook = async (req, res) => {
-    try {
-        const result = await db.query('SELECT * FROM books WHERE repair_status = $1 AND appointment_status = $2',
-            [
-                'Pending',
-                'Approved'
-            ]);
 
+
+const getAllPendingBooks = async (req, res) => {
+    try {
+        const result = await db.query('SELECT * FROM books WHERE repair_status_id = 1 AND appointment_status_id = 1')
         const allPending = result.rows;
 
         res.status(200).json(allPending);
@@ -94,10 +124,7 @@ const EditPendingBook = async (req, res) => {
 
 const getAllRepairingBook = async(req, res) =>{
     try {
-        const result = await db.query('SELECT * FROM books WHERE repair_status = $1',
-            [
-                'Repairing'
-            ]);
+        const result = await db.query('SELECT * FROM books WHERE repair_status_id = 2')
 
         const allRepairing = result.rows;
 
@@ -108,12 +135,9 @@ const getAllRepairingBook = async(req, res) =>{
     }
 }
 
-const getAllDoneBook = async(req, res) =>{
+const getAllCompletedBooks = async(req, res) =>{
     try {
-        const result = await db.query('SELECT * FROM books WHERE repair_status = $1',
-            [
-                'Done'
-            ]);
+        const result = await db.query('SELECT * FROM books WHERE repair_status_id = 3')
 
         const allDone = result.rows;
 
@@ -143,13 +167,11 @@ const editRepairingBook = async (req, res) => {
     }
 
 }
+//select users.username, users.full_name, users.user_id, books.booking_id, books.booking_date, books.cellphone_model, books.issue_description, books.repair_status from users INNER JOIN books on users.user_id=books.user_id;
 
 const getAllPendingAppointment = async(req, res) =>{
     try {
-        const result = await db.query('SELECT * FROM books WHERE appointment_status = $1',
-            [
-                'Pending'
-            ]);
+        const result = await db.query('select users.username, books.book_id, books.user_id, books.book_date, books.cellphone_model, books.issue_description from books INNER JOIN users on users.user_id=books.user_id WHERE appointment_status_id = 1');
 
         const allPendingAppointment = result.rows;
 
@@ -162,10 +184,22 @@ const getAllPendingAppointment = async(req, res) =>{
 
 const getAllApprovedAppointment = async(req, res) =>{
     try {
-        const result = await db.query('SELECT * FROM books WHERE appointment_status = $1',
-            [
-                'Approved'
-            ]);
+        const result = await db.query('select users.username, books.book_id, books.user_id, books.book_date, books.cellphone_model, books.issue_description from books INNER JOIN users on users.user_id=books.user_id WHERE appointment_status_id = 2');
+
+        const allApprovedAppointment = result.rows;
+
+        res.status(200).json(allApprovedAppointment);
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+
+const getAllNonPendingAppointment = async(req, res) =>{
+    try {
+        const result = await db.query('SELECT b.book_id, b.issue_description, b.book_date, u.user_id, u.username, u.full_name, u.email, u.phone_number,  rs.status_name AS repair_status, aps.status_name AS appointment_status, b.cellphone_model, b.remark FROM books b JOIN users u ON b.user_id = u.user_id JOIN repair_statuses rs ON b.repair_status_id = rs.repair_status_id JOIN appointment_statuses aps ON b.appointment_status_id = aps.appointment_status_id WHERE (aps.appointment_status_id = 2) OR (aps.appointment_status_id = 3) ORDER BY b.book_date DESC');
+
 
         const allPendingAppointment = result.rows;
 
@@ -176,19 +210,20 @@ const getAllApprovedAppointment = async(req, res) =>{
     }
 }
 
-const editAllPendingAppointment = async (req, res) => {
-    const { booking_id, appointment_status } = req.body;
+const editPendingAppointment = async (req, res) => {
+    const { book_id, appointment_status, remark } = req.body;
 
     try {
-        const result = await db.query('UPDATE books SET appointment_status = $2 WHERE booking_id = $1',
+        const result = await db.query('UPDATE books SET appointment_status_id = (SELECT appointment_status_id FROM appointment_statuses WHERE status_name = $2 ), remark = $3 WHERE book_id = $1',
             [
-                booking_id,
+                book_id,
                 appointment_status,
+                remark
             ]
         )
 
         console.log(result);
-        res.status(200).json({ message: `Appointment edited successfully! Book ID: ${booking_id}.` });
+        res.status(200).json({ message: `Appointment edited successfully! Book ID: ${book_id}.` });
 
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -220,9 +255,9 @@ const searchedBookInfo = async (req, res) => {
     //select * from users where username like '%a%';
 
     try {
-        const result = await db.query('SELECT * FROM books WHERE booking_id = $1', 
+        const result = await db.query('SELECT b.book_id, b.issue_description, b.book_date, u.user_id, u.username, u.full_name, u.email, u.phone_number,  rs.status_name AS repair_status, aps.status_name AS appointment_status, b.cellphone_model, b.remark FROM books b JOIN users u ON b.user_id = u.user_id JOIN repair_statuses rs ON b.repair_status_id = rs.repair_status_id JOIN appointment_statuses aps ON b.appointment_status_id = aps.appointment_status_id WHERE book_id = $1', 
         [
-            `${req.params.booking_id}`
+            `${req.params.book_id}`
         ]);
 
         const userInfo = result.rows;
@@ -244,14 +279,19 @@ module.exports = {
     addBook,
     getAllBook,
     editBook,
-    getAllPendingBook,
+
+    getAllPendingBooks,
     EditPendingBook,
+
     getAllRepairingBook,
-    getAllDoneBook,
+    getAllCompletedBooks,
     editRepairingBook,
+
     getAllPendingAppointment,
-    editAllPendingAppointment,
     getAllApprovedAppointment,
+    editPendingAppointment,
+    getAllNonPendingAppointment,
+    
     deleteBook,
     searchedBookInfo
 }
