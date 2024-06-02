@@ -233,7 +233,7 @@ const searchedBookInfo = async (req, res) => {
 
 const getAllPendingRepairs = async(req, res) =>{
     try {
-        const result = await db.query('SELECT b.book_id, b.issue_description, b.book_date, u.user_id, u.username, u.full_name, u.email, u.phone_number,  rs.status_name AS repair_status, aps.status_name AS appointment_status, b.cellphone_model, b.remark FROM books b JOIN users u ON b.user_id = u.user_id JOIN repair_statuses rs ON b.repair_status_id = rs.repair_status_id JOIN appointment_statuses aps ON b.appointment_status_id = aps.appointment_status_id WHERE (rs.repair_status_id = 1) OR (aps.appointment_status_id = 2) ORDER BY b.book_date DESC');
+        const result = await db.query('SELECT b.book_id, b.issue_description, b.book_date, u.user_id, u.username, u.full_name, u.email, u.phone_number,  rs.status_name AS repair_status, aps.status_name AS appointment_status, b.cellphone_model, b.remark FROM books b JOIN users u ON b.user_id = u.user_id JOIN repair_statuses rs ON b.repair_status_id = rs.repair_status_id JOIN appointment_statuses aps ON b.appointment_status_id = aps.appointment_status_id WHERE rs.repair_status_id = 1 AND aps.appointment_status_id = 2 ORDER BY b.book_date DESC');
 
 
         const allPendingAppointment = result.rows;
@@ -247,7 +247,7 @@ const getAllPendingRepairs = async(req, res) =>{
 
 const getAllRepairingBooks = async(req, res) =>{
     try {
-        const result = await db.query('SELECT * FROM books WHERE repair_status_id = 2')
+        const result = await db.query('SELECT b.book_id, b.issue_description, b.book_date, u.user_id, u.username, u.full_name, u.email, u.phone_number,  rs.status_name AS repair_status, aps.status_name AS appointment_status, b.cellphone_model, b.remark FROM books b JOIN users u ON b.user_id = u.user_id JOIN repair_statuses rs ON b.repair_status_id = rs.repair_status_id JOIN appointment_statuses aps ON b.appointment_status_id = aps.appointment_status_id WHERE rs.repair_status_id = 2 AND aps.appointment_status_id = 2 ORDER BY b.book_date DESC')
 
         const allRepairing = result.rows;
 
@@ -260,7 +260,7 @@ const getAllRepairingBooks = async(req, res) =>{
 
 const getAllCompletedBooks = async(req, res) =>{
     try {
-        const result = await db.query('SELECT * FROM books WHERE repair_status_id = 3')
+        const result = await db.query('SELECT b.book_id, b.issue_description, b.book_date, u.user_id, u.username, u.full_name, u.email, u.phone_number,  rs.status_name AS repair_status, aps.status_name AS appointment_status, b.cellphone_model, b.remark FROM books b JOIN users u ON b.user_id = u.user_id JOIN repair_statuses rs ON b.repair_status_id = rs.repair_status_id JOIN appointment_statuses aps ON b.appointment_status_id = aps.appointment_status_id WHERE rs.repair_status_id = 3 AND aps.appointment_status_id = 2 ORDER BY b.book_date DESC')
 
         const allDone = result.rows;
 

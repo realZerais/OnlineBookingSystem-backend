@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const userRoutes = require("./routes/user");
 const bookingRoutes = require("./routes/book")
+const progressRoutes = require("./routes/progress")
 
 const app = express();
 const PORT = process.env.PORT;
@@ -21,8 +22,8 @@ app.get('/', (req, res) => {
 });
 
 app.use("/user", userRoutes);
-app.use("/booking", bookingRoutes)
-
+app.use("/booking", bookingRoutes);
+app.use("/progress", progressRoutes);
 
 
 app.listen(
