@@ -1,8 +1,11 @@
 const express = require("express");
 const { 
-    addBook, getAllBook, editBook, 
-    getAllPendingBooks, EditPendingBook, editRepairingBook, getAllRepairingBook, getAllCompletedBooks,
+    addBook, getAllBook, editBook, getAllPendingBooks,
+
     getAllPendingAppointment, editPendingAppointment, getAllNonPendingAppointment, getAllApprovedAppointment,
+
+    getAllPendingRepairs, EditPendingBook, updateRepairingBook, getAllRepairingBooks, getAllCompletedBooks,
+
     deleteBook, searchedBookInfo
 } = require("../controllers/bookController")
 const { cookieJwtAuth } = require("../middlewares/authMiddleware")
@@ -19,19 +22,20 @@ router.put("/editBook", editBook);//
 
 
 router.get("/pendingBooks", getAllPendingBooks);//
-router.get("/completeBooks", getAllCompletedBooks);//
+
 router.patch("/editPendingBook", cookieJwtAuth, EditPendingBook)
 
-
-router.patch("/editRepairingBook", cookieJwtAuth, editRepairingBook)
-router.get("/repairingBooks", getAllRepairingBook);//
 
 router.get("/pendingAppointment", getAllPendingAppointment);//
 router.get("/getAllApprovedAppointment", getAllApprovedAppointment);
 router.get("/getAllNonPendingAppointment", getAllNonPendingAppointment);//
-
 router.patch("/editPendingAppointment",cookieJwtAuth, editPendingAppointment);//
 
+
+router.get("/getAllPendingRepairs", getAllPendingRepairs);//
+router.patch("/updateRepairingBook", cookieJwtAuth, updateRepairingBook)
+router.get("/getAllRepairingBooks", getAllRepairingBooks);//
+router.get("/completeBooks", getAllCompletedBooks);//
 
 router.delete("/deleteBook", deleteBook)//
 
