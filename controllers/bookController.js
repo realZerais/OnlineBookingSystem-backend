@@ -7,7 +7,7 @@ const addBook = async (req, res) => {
 
     try {
         const result = await db.query(query, [user_id, book_date, cellphone_model, issue_description]);
-        res.status(200).json({ message: "Book added successfully!" });
+        res.status(200).json({ message: "Appontment booked! Please wait for approval." });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -290,7 +290,7 @@ const updateRepairingBook = async (req, res) => {
         ])
 
         console.log(result, progressResult);
-        res.status(200).json({ message: `Repair Updated! Booking ID: ${book_id}.` });
+        res.status(200).json({ message: `Book ID: ${book_id}.` });
 
     } catch (error) {
         res.status(400).json({ error: error.message });

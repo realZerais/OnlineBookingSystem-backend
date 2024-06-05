@@ -69,7 +69,7 @@ const loginUser = async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
-        console.log(result.rows[0]);
+        // console.log(result.rows[0]);
         const role = result.rows[0].user_role;
         // console.log(role);
 
@@ -122,7 +122,7 @@ const signupUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         await db.query(query, [username, hashedPassword, email, full_name, phone_number, role_id]);
 
-        const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+        const result = await db.query('SELECT u.username, u.password, ur.role_name AS user_role FROM users u JOIN user_roles ur ON u.role_id = ur.role_id WHERE u.username =  $1', [username]);
 
         const role = result.rows[0].user_role;
 
