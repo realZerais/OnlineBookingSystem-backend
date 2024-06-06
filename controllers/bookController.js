@@ -54,6 +54,27 @@ const getAllBook = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 }
+
+const getAllUserBook = async (req, res) => {
+    let query = 'SELECT b.book_id, b.issue_description, b.book_date, b.remark, b.cellphone_model, b.issue_description, rs.status_name AS repair_status, aps.status_name AS appointment_status FROM books b JOIN users u ON b.user_id = u.user_id JOIN repair_statuses rs ON b.repair_status_id = rs.repair_status_id JOIN appointment_statuses aps ON b.appointment_status_id = aps.appointment_status_id WHERE u.username = $1 ORDER BY b.book_id DESC';
+    
+    try {
+        const result = await db.query(query,[
+            `${req.params.username}`
+        ]);
+
+        const AlluserBook = result.rows;
+
+        // console.log("called")
+        res.status(200).json(AlluserBook);
+
+        // res.status(200).json({ message: 'hello ' + username });
+
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
 // UPDATE books SET 
 // user_id = $2, 
 // booking_date = $3, 
@@ -302,6 +323,8 @@ module.exports = {
     addBook,
     getAllBook,
     editBook,
+
+    getAllUserBook,
 
     getAllPendingBooks,
     EditPendingBook,

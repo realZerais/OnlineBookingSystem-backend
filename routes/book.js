@@ -1,6 +1,6 @@
 const express = require("express");
 const { 
-    addBook, getAllBook, editBook, getAllPendingBooks,
+    addBook, getAllBook, editBook, getAllPendingBooks, getAllUserBook,
 
     getAllPendingAppointment, editPendingAppointment, getAllNonPendingAppointment, getAllApprovedAppointment,
 
@@ -20,6 +20,7 @@ router.post("/addBook", addBook);//
 
 router.put("/editBook", editBook);//
 
+router.get("/getAllUserBook/:username", getAllUserBook);
 
 router.get("/pendingBooks", getAllPendingBooks);//
 
